@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康监测 - AI宠物健康管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800">AI宠物健康管理系统</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-blue-600 font-medium">首页</a>
+                <a href="pets.html" class="text-gray-700 hover:text-blue-600 font-medium">我的宠物</a>
+                <a href="consultation.html" class="text-gray-700 hover:text-blue-600 font-medium">咨询</a>
+                <a href="profile.html" class="text-gray-700 hover:text-blue-600 font-medium">我的</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">健康监测</h2>
+            <button id="add-record-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                添加记录
+            </button>
+        </div>
+
+        <!-- 宠物选择 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">选择宠物</h3>
+            <div class="flex flex-wrap gap-3">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md">小金（金毛）</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">小白（波斯猫）</button>
+            </div>
+        </div>
+
+        <!-- 健康数据图表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- 体重趋势 -->
+            <div class="bg-white rounded-lg shadow p-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">体重趋势</h3>
+                <div class="h-64">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 饮食记录 -->
+            <div class="bg-white rounded-lg shadow p-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">饮食记录</h3>
+                <div class="h-64">
+                    <canvas id="foodChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 健康记录列表 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">健康记录</h3>
+            </div>
+            <div class="divide-y divide-gray-200">
+                <div class="p-4 flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2">体重</span>
+                            <span class="font-medium">15.2 kg</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">2026-03-31 10:30</div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-500 hover:text-red-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center">
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">饮食</span>
+                            <span class="font-medium">500 g</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">2026-03-31 08:00</div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-500 hover:text-red-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mr-2">运动</span>
+                            <span class="font-medium">30 分钟</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">2026-03-30 16:00</div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-500 hover:text-red-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏（移动端） -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md border-t border-gray-200">
+        <div class="flex justify-around">
+            <a href="index.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="pets.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的宠物</span>
+            </a>
+            <a href="consultation.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">咨询</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 添加健康记录模态框 -->
+    <div id="add-record-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">添加健康记录</h3>
+                    <button id="close-record-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="add-record-form" class="space-y-4">
+                    <div>
+                        <label for="record-type" class="block text-sm font-medium text-gray-700 mb-1">记录类型</label>
+                        <select id="record-type" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="weight">体重</option>
+                            <option value="food">饮食</option>
+                            <option value="exercise">运动</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="record-value" class="block text-sm font-medium text-gray-700 mb-1">数值</label>
+                        <input type="number" id="record-value" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="record-date" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                        <input type="datetime-local" id="record-date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">添加记录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打开添加健康记录模态框
+        document.getElementById('add-record-btn').addEventListener('click', function() {
+            document.getElementById('add-record-modal').classList.remove('hidden');
+        });
+
+        // 关闭添加健康记录模态框
+        document.getElementById('close-record-modal').addEventListener('click', function() {
+            document.getElementById('add-record-modal').classList.add('hidden');
+        });
+
+        // 点击模态框外部关闭
+        document.getElementById('add-record-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // 添加健康记录表单提交
+        document.getElementById('add-record-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('record-type').value;
+            const value = document.getElementById('record-value').value;
+            const date = document.getElementById('record-date').value;
+            
+            if (!value || !date) {
+                Swal.fire('提示', '请填写所有必填字段', 'warning');
+                return;
+            }
+            
+            // 模拟添加健康记录请求
+            fetch('http://localhost:8080/api/health-records', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ type, value, date, petId: 1 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('成功', '健康记录添加成功', 'success').then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('错误', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('错误', '添加失败，请稍后重试', 'error');
+            });
+        });
+
+        // 初始化图表
+        window.addEventListener('load', function() {
+            // 体重趋势图表
+            const weightCtx = document.getElementById('weightChart').getContext('2d');
+            new Chart(weightCtx, {
+                type: 'line',
+                data: {
+                    labels: ['3月25日', '3月26日', '3月27日', '3月28日', '3月29日', '3月30日', '3月31日'],
+                    datasets: [{
+                        label: '体重 (kg)',
+                        data: [15.0, 15.1, 15.1, 15.2, 15.2, 15.2, 15.2],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            // 饮食记录图表
+            const foodCtx = document.getElementById('foodChart').getContext('2d');
+            new Chart(foodCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['3月25日', '3月26日', '3月27日', '3月28日', '3月29日', '3月30日', '3月31日'],
+                    datasets: [{
+                        label: '饮食量 (g)',
+                        data: [480, 500, 490, 510, 500, 495, 500],
+                        backgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

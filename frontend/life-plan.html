@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生活方案定制 - AI宠物健康管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800">AI宠物健康管理系统</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-blue-600 font-medium">首页</a>
+                <a href="pets.html" class="text-gray-700 hover:text-blue-600 font-medium">我的宠物</a>
+                <a href="consultation.html" class="text-gray-700 hover:text-blue-600 font-medium">咨询</a>
+                <a href="profile.html" class="text-gray-700 hover:text-blue-600 font-medium">我的</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">生活方案定制</h2>
+        </div>
+
+        <!-- 宠物信息表单 -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">宠物信息</h3>
+            <form id="pet-info-form" class="space-y-4">
+                <div>
+                    <label for="pet-name" class="block text-sm font-medium text-gray-700 mb-1">宠物姓名</label>
+                    <input type="text" id="pet-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入宠物姓名">
+                </div>
+                <div>
+                    <label for="pet-breed" class="block text-sm font-medium text-gray-700 mb-1">品种</label>
+                    <input type="text" id="pet-breed" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入宠物品种">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="pet-age" class="block text-sm font-medium text-gray-700 mb-1">年龄（岁）</label>
+                        <input type="number" id="pet-age" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入宠物年龄">
+                    </div>
+                    <div>
+                        <label for="pet-weight" class="block text-sm font-medium text-gray-700 mb-1">体重（kg）</label>
+                        <input type="number" id="pet-weight" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入宠物体重">
+                    </div>
+                </div>
+                <div>
+                    <label for="pet-gender" class="block text-sm font-medium text-gray-700 mb-1">性别</label>
+                    <select id="pet-gender" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="male">公</option>
+                        <option value="female">母</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="pet-activity" class="block text-sm font-medium text-gray-700 mb-1">活动量</label>
+                    <select id="pet-activity" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="low">低</option>
+                        <option value="medium">中等</option>
+                        <option value="high">高</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                        生成生活方案
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 生活方案结果 -->
+        <div id="life-plan-result" class="bg-white rounded-lg shadow overflow-hidden hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">一周生活方案</h3>
+                <p class="text-gray-600 mt-1">为 <span id="plan-pet-name" class="font-medium">小金</span>（<span id="plan-pet-breed" class="font-medium">金毛</span>，<span id="plan-pet-age" class="font-medium">2</span>岁，<span id="plan-pet-weight" class="font-medium">15</span>kg）定制</p>
+            </div>
+            <div class="p-6">
+                <div class="space-y-6">
+                    <!-- 周一 -->
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-800">周一</h4>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">第一天</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">饮食</h5>
+                                <p class="text-gray-600 text-sm">早餐：皇家金毛专用狗粮 150g + 鸡胸肉 50g + 胡萝卜 30g</p>
+                                <p class="text-gray-600 text-sm">午餐：皇家金毛专用狗粮 200g + 牛肉 60g + 西兰花 40g</p>
+                                <p class="text-gray-600 text-sm">晚餐：皇家金毛专用狗粮 250g + 三文鱼 70g + 南瓜 50g</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">运动</h5>
+                                <p class="text-gray-600 text-sm">上午：散步 30分钟</p>
+                                <p class="text-gray-600 text-sm">下午：玩 fetch 游戏 20分钟</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">训练</h5>
+                                <p class="text-gray-600 text-sm">坐下训练：10分钟</p>
+                                <p class="text-gray-600 text-sm">握手训练：10分钟</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 周二 -->
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-800">周二</h4>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">第二天</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">饮食</h5>
+                                <p class="text-gray-600 text-sm">早餐：皇家金毛专用狗粮 150g + 鸡蛋 1个 + 菠菜 30g</p>
+                                <p class="text-gray-600 text-sm">午餐：皇家金毛专用狗粮 200g + 鸡肉 60g + 土豆 40g</p>
+                                <p class="text-gray-600 text-sm">晚餐：皇家金毛专用狗粮 250g + 鱼肉 70g + 胡萝卜 50g</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">运动</h5>
+                                <p class="text-gray-600 text-sm">上午：跑步 20分钟</p>
+                                <p class="text-gray-600 text-sm">下午：游泳 15分钟</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">训练</h5>
+                                <p class="text-gray-600 text-sm">趴下训练：10分钟</p>
+                                <p class="text-gray-600 text-sm">等待训练：10分钟</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 周三 -->
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-gray-800">周三</h4>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">第三天</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">饮食</h5>
+                                <p class="text-gray-600 text-sm">早餐：皇家金毛专用狗粮 150g + 酸奶 50g + 苹果 30g</p>
+                                <p class="text-gray-600 text-sm">午餐：皇家金毛专用狗粮 200g + 火鸡肉 60g + 豌豆 40g</p>
+                                <p class="text-gray-600 text-sm">晚餐：皇家金毛专用狗粮 250g + 牛肉 70g + 南瓜 50g</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">运动</h5>
+                                <p class="text-gray-600 text-sm">上午：散步 40分钟</p>
+                                <p class="text-gray-600 text-sm">下午：玩 tug-of-war 游戏 15分钟</p>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-medium text-gray-700 mb-1">训练</h5>
+                                <p class="text-gray-600 text-sm">召回训练：10分钟</p>
+                                <p class="text-gray-600 text-sm">坐定训练：10分钟</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-center">
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        保存方案
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏（移动端） -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md border-t border-gray-200">
+        <div class="flex justify-around">
+            <a href="index.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="pets.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的宠物</span>
+            </a>
+            <a href="consultation.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">咨询</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // 生成生活方案
+        document.getElementById('pet-info-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('pet-name').value;
+            const breed = document.getElementById('pet-breed').value;
+            const age = document.getElementById('pet-age').value;
+            const weight = document.getElementById('pet-weight').value;
+            const gender = document.getElementById('pet-gender').value;
+            const activity = document.getElementById('pet-activity').value;
+            
+            if (!name || !breed || !age || !weight) {
+                Swal.fire('提示', '请填写所有必填字段', 'warning');
+                return;
+            }
+            
+            Swal.fire('提示', '正在生成生活方案...', 'info');
+            
+            // 模拟生成生活方案请求
+            fetch('http://localhost:8080/api/life-plan/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ name, breed, age, weight, gender, activity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 更新方案信息
+                    document.getElementById('plan-pet-name').textContent = name;
+                    document.getElementById('plan-pet-breed').textContent = breed;
+                    document.getElementById('plan-pet-age').textContent = age;
+                    document.getElementById('plan-pet-weight').textContent = weight;
+                    
+                    // 显示方案结果
+                    document.getElementById('life-plan-result').classList.remove('hidden');
+                    
+                    Swal.fire('成功', '生活方案生成成功', 'success');
+                } else {
+                    Swal.fire('错误', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('错误', '生成失败，请稍后重试', 'error');
+            });
+        });
+
+        // 保存方案
+        document.querySelector('.mt-6.flex.justify-center button').addEventListener('click', function() {
+            Swal.fire('提示', '正在保存方案...', 'info');
+            
+            // 模拟保存方案请求
+            fetch('http://localhost:8080/api/life-plan/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ 
+                    petId: 1,
+                    plan: {
+                        name: document.getElementById('plan-pet-name').textContent,
+                        breed: document.getElementById('plan-pet-breed').textContent,
+                        age: document.getElementById('plan-pet-age').textContent,
+                        weight: document.getElementById('plan-pet-weight').textContent
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('成功', '方案保存成功', 'success');
+                } else {
+                    Swal.fire('错误', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('错误', '保存失败，请稍后重试', 'error');
+            });
+        });
+    </script>
+</body>
+</html>

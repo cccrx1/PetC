@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喂养指南 - AI宠物健康管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800">AI宠物健康管理系统</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-blue-600 font-medium">首页</a>
+                <a href="pets.html" class="text-gray-700 hover:text-blue-600 font-medium">我的宠物</a>
+                <a href="consultation.html" class="text-gray-700 hover:text-blue-600 font-medium">咨询</a>
+                <a href="profile.html" class="text-gray-700 hover:text-blue-600 font-medium">我的</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">喂养指南</h2>
+        </div>
+
+        <!-- 宠物选择 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">选择宠物</h3>
+            <div class="flex flex-wrap gap-3">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md">小金（金毛）</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">小白（波斯猫）</button>
+            </div>
+        </div>
+
+        <!-- 热量计算 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">每日热量需求</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="text-sm text-gray-500 mb-1">体重</div>
+                    <div class="text-2xl font-bold text-gray-800">15 kg</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="text-sm text-gray-500 mb-1">年龄</div>
+                    <div class="text-2xl font-bold text-gray-800">2 岁</div>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <div class="text-sm text-gray-500 mb-1">每日热量</div>
+                    <div class="text-2xl font-bold text-gray-800">1200 kcal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个性化食谱建议 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">个性化食谱建议</h3>
+            <div class="space-y-4">
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">早餐</h4>
+                        <span class="text-sm text-gray-500">300 kcal</span>
+                    </div>
+                    <div class="text-gray-600 text-sm">
+                        <p>皇家金毛专用狗粮 150g</p>
+                        <p>鸡胸肉 50g</p>
+                        <p>胡萝卜 30g</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">午餐</h4>
+                        <span class="text-sm text-gray-500">400 kcal</span>
+                    </div>
+                    <div class="text-gray-600 text-sm">
+                        <p>皇家金毛专用狗粮 200g</p>
+                        <p>牛肉 60g</p>
+                        <p>西兰花 40g</p>
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">晚餐</h4>
+                        <span class="text-sm text-gray-500">500 kcal</span>
+                    </div>
+                    <div class="text-gray-600 text-sm">
+                        <p>皇家金毛专用狗粮 250g</p>
+                        <p>三文鱼 70g</p>
+                        <p>南瓜 50g</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 喂养建议 -->
+        <div class="bg-white rounded-lg shadow p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">喂养建议</h3>
+            <div class="space-y-2 text-gray-600">
+                <p>• 每天定时定量喂养，避免暴饮暴食</p>
+                <p>• 确保宠物有充足的新鲜饮用水</p>
+                <p>• 定期更换狗粮品牌，避免营养单一</p>
+                <p>• 避免给宠物喂食人类食物，特别是巧克力、洋葱等有毒食物</p>
+                <p>• 根据宠物的活动量和体重变化，适时调整饮食量</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏（移动端） -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md border-t border-gray-200">
+        <div class="flex justify-around">
+            <a href="index.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="pets.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的宠物</span>
+            </a>
+            <a href="consultation.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">咨询</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // 加载宠物的喂养指南
+        function loadFeedGuide(petId) {
+            fetch(`http://localhost:8080/api/feed-guide/${petId}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 更新热量计算
+                    const calories = data.data.calories;
+                    document.querySelector('.bg-yellow-50 .text-2xl').textContent = `${calories} kcal`;
+                    
+                    // 更新食谱建议
+                    const meals = data.data.meals;
+                    const mealContainers = document.querySelectorAll('.border-gray-200');
+                    meals.forEach((meal, index) => {
+                        if (mealContainers[index]) {
+                            mealContainers[index].querySelector('.text-sm.text-gray-500').textContent = `${meal.calories} kcal`;
+                            const foodList = mealContainers[index].querySelector('.text-gray-600');
+                            foodList.innerHTML = meal.foods.map(food => `<p>${food}</p>`).join('');
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('加载喂养指南失败:', error);
+            });
+        }
+
+        // 页面加载时加载默认宠物的喂养指南
+        window.addEventListener('load', function() {
+            loadFeedGuide(1); // 默认加载小金（金毛）的喂养指南
+        });
+
+        // 宠物选择按钮点击事件
+        document.querySelectorAll('.flex.flex-wrap.gap-3 button').forEach(button => {
+            button.addEventListener('click', function() {
+                // 更新按钮样式
+                document.querySelectorAll('.flex.flex-wrap.gap-3 button').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700');
+                this.classList.add('bg-blue-600', 'text-white');
+                
+                // 加载对应宠物的喂养指南
+                const petId = this.textContent.includes('小金') ? 1 : 2;
+                loadFeedGuide(petId);
+            });
+        });
+    </script>
+</body>
+</html>

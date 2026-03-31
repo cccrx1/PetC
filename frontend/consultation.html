@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兽医咨询 - AI宠物健康管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-800">AI宠物健康管理系统</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-blue-600 font-medium">首页</a>
+                <a href="pets.html" class="text-gray-700 hover:text-blue-600 font-medium">我的宠物</a>
+                <a href="consultation.html" class="text-blue-600 hover:text-blue-800 font-medium">咨询</a>
+                <a href="profile.html" class="text-gray-700 hover:text-blue-600 font-medium">我的</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">兽医咨询</h2>
+        </div>
+
+        <!-- 咨询类型选择 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">选择咨询类型</h3>
+            <div class="flex flex-wrap gap-3">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md">在线图文问诊</button>
+                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">线下医院预约</button>
+            </div>
+        </div>
+
+        <!-- 在线咨询 -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">在线图文问诊</h3>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">选择宠物</label>
+                    <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>小金（金毛）</option>
+                        <option>小白（波斯猫）</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">症状描述</label>
+                    <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="请详细描述宠物的症状..."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上传图片（可选）</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="file" class="flex-1 border border-gray-300 rounded-md px-4 py-2">
+                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            上传
+                        </button>
+                    </div>
+                </div>
+                <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">提交咨询</button>
+            </div>
+        </div>
+
+        <!-- 咨询记录 -->
+        <div class="mt-6 bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">咨询记录</h3>
+            </div>
+            <div class="divide-y divide-gray-200">
+                <div class="p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2">在线咨询</span>
+                            <span class="font-medium">小金（金毛）</span>
+                        </div>
+                        <span class="text-sm text-gray-500">2026-03-30 14:30</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">症状：最近食欲下降，精神不振</div>
+                    <div class="flex justify-end">
+                        <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">线下预约</span>
+                            <span class="font-medium">小白（波斯猫）</span>
+                        </div>
+                        <span class="text-sm text-gray-500">2026-03-28 09:15</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">预约：北京宠物医院 - 2026-03-29 10:00</div>
+                    <div class="flex justify-end">
+                        <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏（移动端） -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md border-t border-gray-200">
+        <div class="flex justify-around">
+            <a href="index.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="pets.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的宠物</span>
+            </a>
+            <a href="consultation.html" class="flex flex-col items-center py-2 px-4 text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">咨询</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // 提交咨询
+        document.querySelector('button:last-child').addEventListener('click', function() {
+            const petSelect = document.querySelector('select');
+            const symptomText = document.querySelector('textarea');
+            
+            if (!symptomText.value.trim()) {
+                Swal.fire('提示', '请描述宠物的症状', 'warning');
+                return;
+            }
+            
+            // 模拟提交咨询请求
+            fetch('http://localhost:8080/api/consultations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    petId: petSelect.value === '小金（金毛）' ? 1 : 2,
+                    type: 'online',
+                    symptoms: symptomText.value,
+                    status: 'pending'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('成功', '咨询提交成功，等待医生回复', 'success').then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('错误', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('错误', '提交失败，请稍后重试', 'error');
+            });
+        });
+    </script>
+</body>
+</html>
