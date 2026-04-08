@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/health-records")
+@RequestMapping("/health-records")
 public class HealthRecordController {
     
     @Autowired
