@@ -110,17 +110,20 @@
                 },
                 body: JSON.stringify({ username: email, password })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    Swal.fire('成功', '登录成功', 'success').then(() => {
-                        window.location.href = 'index.html';
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('登录失败');
                 }
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem('token', data.token);
+                // 模拟用户信息
+                const user = { username: email };
+                localStorage.setItem('user', JSON.stringify(user));
+                Swal.fire('成功', '登录成功', 'success').then(() => {
+                    window.location.href = 'index.html';
+                });
             })
             .catch(error => {
                 Swal.fire('错误', '登录失败，请稍后重试', 'error');
@@ -150,17 +153,18 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name, username: email, password })
+                body: JSON.stringify({ name, username: email, email: email, password })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('成功', '注册成功，请登录', 'success').then(() => {
-                        document.getElementById('login-tab').click();
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('注册失败');
                 }
+                return response.json();
+            })
+            .then(data => {
+                Swal.fire('成功', '注册成功，请登录', 'success').then(() => {
+                    document.getElementById('login-tab').click();
+                });
             })
             .catch(error => {
                 Swal.fire('错误', '注册失败，请稍后重试', 'error');
