@@ -71,8 +71,8 @@ public class ArticleController {
     }
 
     // 收藏文章
-    @PostMapping("/{id}/favorite")
-    public ResponseEntity<Article> favoriteArticle(@PathVariable Long id) {
+    @PostMapping("/{id}/collect")
+    public ResponseEntity<Article> collectArticle(@PathVariable Long id) {
         Article article = articleService.favoriteArticle(id);
         if (article != null) {
             return new ResponseEntity<>(article, HttpStatus.OK);

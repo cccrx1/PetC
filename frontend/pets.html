@@ -196,6 +196,70 @@
         </div>
     </div>
 
+    <!-- 编辑宠物模态框 -->
+    <div id="edit-pet-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">编辑宠物</h3>
+                    <button id="close-edit-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="edit-pet-form" class="space-y-4">
+                    <input type="hidden" id="edit-pet-id">
+                    <div>
+                        <label for="edit-pet-name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                        <input type="text" id="edit-pet-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="edit-pet-breed" class="block text-sm font-medium text-gray-700 mb-1">品种</label>
+                        <input type="text" id="edit-pet-breed" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="edit-pet-age" class="block text-sm font-medium text-gray-700 mb-1">年龄</label>
+                        <input type="number" id="edit-pet-age" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="edit-pet-weight" class="block text-sm font-medium text-gray-700 mb-1">体重 (kg)</label>
+                        <input type="number" id="edit-pet-weight" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="edit-pet-gender" class="block text-sm font-medium text-gray-700 mb-1">性别</label>
+                        <select id="edit-pet-gender" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="male">公</option>
+                            <option value="female">母</option>
+                        </select>
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">保存修改</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 宠物详情模态框 -->
+    <div id="pet-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">宠物详情</h3>
+                    <button id="close-detail-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="pet-detail-content" class="space-y-4">
+                    <!-- 宠物详情内容将通过JavaScript动态填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 打开添加宠物模态框
         document.getElementById('add-pet-btn').addEventListener('click', function() {
@@ -214,14 +278,38 @@
             }
         });
 
+        // 关闭编辑宠物模态框
+        document.getElementById('close-edit-modal').addEventListener('click', function() {
+            document.getElementById('edit-pet-modal').classList.add('hidden');
+        });
+
+        // 点击编辑模态框外部关闭
+        document.getElementById('edit-pet-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // 关闭宠物详情模态框
+        document.getElementById('close-detail-modal').addEventListener('click', function() {
+            document.getElementById('pet-detail-modal').classList.add('hidden');
+        });
+
+        // 点击详情模态框外部关闭
+        document.getElementById('pet-detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
         // 添加宠物表单提交
-        document.getElementById('add-pet-form').addEventListener('submit', function(e) {
+        document.getElementById('add-pet-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('pet-name').value;
             const breed = document.getElementById('pet-breed').value;
-            const age = document.getElementById('pet-age').value;
-            const weight = document.getElementById('pet-weight').value;
+            const age = parseInt(document.getElementById('pet-age').value);
+            const weight = parseFloat(document.getElementById('pet-weight').value);
             const gender = document.getElementById('pet-gender').value;
             
             if (!name || !breed || !age || !weight) {
@@ -229,91 +317,199 @@
                 return;
             }
             
-            // 模拟添加宠物请求
-            fetch('http://localhost:8080/api/pets', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ name, breed, age, weight, gender })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('成功', '宠物添加成功', 'success').then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
-                }
-            })
-            .catch(error => {
+            try {
+                const response = await window.auth.apiRequest('/pets', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, breed, age, weight, gender })
+                });
+                
+                Swal.fire('成功', '宠物添加成功', 'success').then(() => {
+                    document.getElementById('add-pet-modal').classList.add('hidden');
+                    loadPets();
+                });
+            } catch (error) {
                 Swal.fire('错误', '添加失败，请稍后重试', 'error');
-            });
+            }
+        });
+
+        // 编辑宠物表单提交
+        document.getElementById('edit-pet-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('edit-pet-id').value;
+            const name = document.getElementById('edit-pet-name').value;
+            const breed = document.getElementById('edit-pet-breed').value;
+            const age = parseInt(document.getElementById('edit-pet-age').value);
+            const weight = parseFloat(document.getElementById('edit-pet-weight').value);
+            const gender = document.getElementById('edit-pet-gender').value;
+            
+            if (!name || !breed || !age || !weight) {
+                Swal.fire('提示', '请填写所有必填字段', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await window.auth.apiRequest(`/pets/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ name, breed, age, weight, gender })
+                });
+                
+                Swal.fire('成功', '宠物信息更新成功', 'success').then(() => {
+                    document.getElementById('edit-pet-modal').classList.add('hidden');
+                    loadPets();
+                });
+            } catch (error) {
+                Swal.fire('错误', '更新失败，请稍后重试', 'error');
+            }
         });
 
         // 加载宠物列表
-        function loadPets() {
-            fetch('http://localhost:8080/api/pets', {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // 渲染宠物列表
-                    const petsContainer = document.querySelector('.grid');
-                    petsContainer.innerHTML = '';
-                    
-                    data.data.forEach(pet => {
-                        const petCard = `
-                            <div class="bg-white rounded-lg shadow overflow-hidden">
-                                <div class="relative h-48">
-                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20${pet.breed}&image_size=landscape_4_3" alt="${pet.name}" class="w-full h-full object-cover">
-                                    <div class="absolute top-4 right-4 flex space-x-2">
-                                        <button class="bg-white/80 hover:bg-white rounded-full p-2">
-                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                                            </svg>
-                                        </button>
-                                        <button class="bg-white/80 hover:bg-white rounded-full p-2">
-                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <h3 class="text-lg font-semibold text-gray-800">${pet.name}</h3>
-                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${pet.breed}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
-                                        <div>年龄：${pet.age}岁</div>
-                                        <div>体重：${pet.weight}kg</div>
-                                        <div>性别：${pet.gender === 'male' ? '公' : '母'}</div>
-                                        <div>疫苗：已完成</div>
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition text-sm">查看详情</button>
-                                        <button class="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition text-sm">健康记录</button>
-                                    </div>
+        async function loadPets() {
+            try {
+                const pets = await window.auth.apiRequest('/pets');
+                
+                // 渲染宠物列表
+                const petsContainer = document.querySelector('.grid');
+                petsContainer.innerHTML = '';
+                
+                pets.forEach(pet => {
+                    const petCard = `
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="relative h-48">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20${pet.breed}&image_size=landscape_4_3" alt="${pet.name}" class="w-full h-full object-cover">
+                                <div class="absolute top-4 right-4 flex space-x-2">
+                                    <button class="bg-white/80 hover:bg-white rounded-full p-2 edit-pet-btn" data-id="${pet.id}">
+                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="bg-white/80 hover:bg-white rounded-full p-2 delete-pet-btn" data-id="${pet.id}">
+                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                        `;
-                        petsContainer.innerHTML += petCard;
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-800">${pet.name}</h3>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${pet.breed}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
+                                    <div>年龄：${pet.age}岁</div>
+                                    <div>体重：${pet.weight}kg</div>
+                                    <div>性别：${pet.gender === 'male' ? '公' : '母'}</div>
+                                    <div>疫苗：已完成</div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition text-sm view-pet-btn" data-id="${pet.id}">查看详情</button>
+                                    <button class="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition text-sm">健康记录</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    petsContainer.innerHTML += petCard;
+                });
+                
+                // 绑定编辑按钮事件
+                document.querySelectorAll('.edit-pet-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const petId = this.dataset.id;
+                        try {
+                            const pet = await window.auth.apiRequest(`/pets/${petId}`);
+                            document.getElementById('edit-pet-id').value = pet.id;
+                            document.getElementById('edit-pet-name').value = pet.name;
+                            document.getElementById('edit-pet-breed').value = pet.breed;
+                            document.getElementById('edit-pet-age').value = pet.age;
+                            document.getElementById('edit-pet-weight').value = pet.weight;
+                            document.getElementById('edit-pet-gender').value = pet.gender;
+                            document.getElementById('edit-pet-modal').classList.remove('hidden');
+                        } catch (error) {
+                            Swal.fire('错误', '获取宠物信息失败', 'error');
+                        }
                     });
-                }
-            })
-            .catch(error => {
+                });
+                
+                // 绑定删除按钮事件
+                document.querySelectorAll('.delete-pet-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const petId = this.dataset.id;
+                        Swal.fire({
+                            title: '确认删除',
+                            text: '确定要删除这个宠物吗？',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '删除',
+                            cancelButtonText: '取消'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    await window.auth.apiRequest(`/pets/${petId}`, {
+                                        method: 'DELETE'
+                                    });
+                                    Swal.fire('成功', '宠物已删除', 'success').then(() => {
+                                        loadPets();
+                                    });
+                                } catch (error) {
+                                    Swal.fire('错误', '删除失败，请稍后重试', 'error');
+                                }
+                            }
+                        });
+                    });
+                });
+                
+                // 绑定查看详情按钮事件
+                document.querySelectorAll('.view-pet-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const petId = this.dataset.id;
+                        try {
+                            const pet = await window.auth.apiRequest(`/pets/${petId}`);
+                            const detailContent = `
+                                <div class="flex flex-col items-center mb-4">
+                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20${pet.breed}&image_size=landscape_4_3" alt="${pet.name}" class="w-full h-48 object-cover rounded-md mb-4">
+                                    <h3 class="text-2xl font-bold text-gray-800">${pet.name}</h3>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">${pet.breed}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-gray-50 p-4 rounded-md">
+                                        <h4 class="font-semibold text-gray-700 mb-2">基本信息</h4>
+                                        <div class="space-y-2">
+                                            <div><span class="text-gray-600">年龄：</span><span>${pet.age}岁</span></div>
+                                            <div><span class="text-gray-600">体重：</span><span>${pet.weight}kg</span></div>
+                                            <div><span class="text-gray-600">性别：</span><span>${pet.gender === 'male' ? '公' : '母'}</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-md">
+                                        <h4 class="font-semibold text-gray-700 mb-2">健康状态</h4>
+                                        <div class="space-y-2">
+                                            <div><span class="text-gray-600">疫苗：</span><span>已完成</span></div>
+                                            <div><span class="text-gray-600">驱虫：</span><span>已完成</span></div>
+                                            <div><span class="text-gray-600">状态：</span><span>健康</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 bg-gray-50 p-4 rounded-md">
+                                    <h4 class="font-semibold text-gray-700 mb-2">备注</h4>
+                                    <p class="text-gray-600">暂无备注信息</p>
+                                </div>
+                            `;
+                            document.getElementById('pet-detail-content').innerHTML = detailContent;
+                            document.getElementById('pet-detail-modal').classList.remove('hidden');
+                        } catch (error) {
+                            Swal.fire('错误', '获取宠物信息失败', 'error');
+                        }
+                    });
+                });
+            } catch (error) {
                 console.error('加载宠物列表失败:', error);
-            });
+                Swal.fire('错误', '加载宠物列表失败', 'error');
+            }
         }
 
         // 页面加载时加载宠物列表
         window.addEventListener('load', loadPets);
     </script>
+    <!-- 引入主脚本 -->
+    <script src="src/js/main.js"></script>
 </body>
 </html>

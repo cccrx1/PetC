@@ -51,12 +51,12 @@
                         <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pet%20nutrition%20guide&image_size=landscape_16_9" alt="宠物营养指南" class="w-full h-full object-cover">
                     </div>
                 </div>
-                <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/80 rounded-full p-2">
+                <button id="carousel-prev" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/80 rounded-full p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </button>
-                <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/80 rounded-full p-2">
+                <button id="carousel-next" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/50 hover:bg-white/80 rounded-full p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -152,7 +152,7 @@
         <section class="mb-8">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-800">养宠科普</h2>
-                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">查看更多</a>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium" id="view-more-btn">查看更多</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -163,12 +163,12 @@
                         <div class="flex justify-between items-center">
                             <span class="text-gray-500 text-xs">2026-03-30</span>
                             <div class="flex space-x-3">
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-like-btn" data-article-id="1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                     </svg>
                                 </button>
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-collect-btn" data-article-id="1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                                     </svg>
@@ -185,12 +185,12 @@
                         <div class="flex justify-between items-center">
                             <span class="text-gray-500 text-xs">2026-03-29</span>
                             <div class="flex space-x-3">
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-like-btn" data-article-id="2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                     </svg>
                                 </button>
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-collect-btn" data-article-id="2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                                     </svg>
@@ -207,12 +207,12 @@
                         <div class="flex justify-between items-center">
                             <span class="text-gray-500 text-xs">2026-03-28</span>
                             <div class="flex space-x-3">
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-like-btn" data-article-id="3">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                     </svg>
                                 </button>
-                                <button class="text-gray-500 hover:text-blue-600">
+                                <button class="text-gray-500 hover:text-blue-600 article-collect-btn" data-article-id="3">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                                     </svg>
@@ -290,5 +290,26 @@
 
     <!-- JavaScript -->
     <script src="src/js/main.js"></script>
+    <script>
+        // 页面加载时获取数据
+        window.addEventListener('load', async function() {
+            try {
+                // 获取宠物数量
+                const pets = await window.auth.apiRequest('/pets');
+                const petCount = pets.length;
+                document.querySelector('.bg-blue-100').parentElement.querySelector('p').textContent = petCount;
+                
+                // 获取咨询记录数量
+                const consultations = await window.auth.apiRequest('/consultations');
+                const consultationCount = consultations.length;
+                document.querySelector('.bg-purple-100').parentElement.querySelector('p').textContent = consultationCount;
+                
+                // 这里可以添加获取未读提醒和待办事项数量的代码
+                // 目前暂时使用硬编码的数值
+            } catch (error) {
+                console.error('获取数据失败:', error);
+            }
+        });
+    </script>
 </body>
 </html>

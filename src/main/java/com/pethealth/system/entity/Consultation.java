@@ -19,6 +19,7 @@ public class Consultation {
     private Pet pet;
     
     private String title;
+    private String type;
     private String description;
     private String status;
     private String response;
@@ -73,6 +74,14 @@ public class Consultation {
     
     public void setTitle(String title) {
         this.title = title;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public void setType(String type) {
+        this.type = type;
     }
     
     public String getDescription() {

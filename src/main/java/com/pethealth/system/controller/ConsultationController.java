@@ -1,13 +1,20 @@
 package com.pethealth.system.controller;
 
 import com.pethealth.system.entity.Consultation;
+import com.pethealth.system.entity.Pet;
+import com.pethealth.system.entity.User;
 import com.pethealth.system.service.ConsultationService;
+import com.pethealth.system.service.UserService;
+import com.pethealth.system.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/consultations")
@@ -15,11 +22,82 @@ public class ConsultationController {
 
     @Autowired
     private ConsultationService consultationService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping
-    public ResponseEntity<Consultation> createConsultation(@RequestBody Consultation consultation) {
+    public ResponseEntity<Consultation> createConsultation(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> request) {
+        // 从token中提取用户名
+        String jwt = token.substring(7); // 去掉Bearer前缀
+        String username = jwtUtil.extractUsername(jwt);
+        User user = userService.getProfile(username);
+        
+        // 创建Consultation对象
+        Consultation consultation = new Consultation();
+        consultation.setUser(user);
+        
+        // 设置宠物
+        if (request.containsKey("petId")) {
+            Long petId = ((Number) request.get("petId")).longValue();
+            Pet pet = new Pet();
+            pet.setId(petId);
+            consultation.setPet(pet);
+        }
+        
+        // 设置其他字段
+        if (request.containsKey("type")) {
+            consultation.setType((String) request.get("type"));
+        }
+        
+        if (request.containsKey("symptoms")) {
+            consultation.setDescription((String) request.get("symptoms"));
+        }
+        
+        // 设置title字段
+        if (request.containsKey("type")) {
+            String type = (String) request.get("type");
+            if ("online".equals(type)) {
+                consultation.setTitle("在线咨询");
+            } else if ("offline".equals(type)) {
+                consultation.setTitle("线下预约");
+            }
+        }
+        
+        if (request.containsKey("status")) {
+            consultation.setStatus((String) request.get("status"));
+        }
+        
+        if (request.containsKey("hospital")) {
+            consultation.setHospitalName((String) request.get("hospital"));
+        }
+        
+        if (request.containsKey("appointmentTime")) {
+            try {
+                String appointmentTimeStr = (String) request.get("appointmentTime");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDateTime appointmentTime = LocalDateTime.parse(appointmentTimeStr, formatter);
+                consultation.setAppointmentTime(appointmentTime);
+            } catch (Exception e) {
+                // 忽略日期解析错误
+            }
+        }
+        
         Consultation createdConsultation = consultationService.createConsultation(consultation);
         return new ResponseEntity<>(createdConsultation, HttpStatus.CREATED);
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<Consultation>> getConsultations(@RequestHeader("Authorization") String token) {
+        // 从token中提取用户名
+        String jwt = token.substring(7); // 去掉Bearer前缀
+        String username = jwtUtil.extractUsername(jwt);
+        User user = userService.getProfile(username);
+        List<Consultation> consultations = consultationService.getConsultationsByUserId(user.getId());
+        return new ResponseEntity<>(consultations, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

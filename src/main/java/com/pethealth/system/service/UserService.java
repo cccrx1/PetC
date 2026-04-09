@@ -46,14 +46,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String login(String username, String password) {
-        // 认证用户
+    public String login(String usernameOrEmail, String password) {
+        // 直接使用usernameOrEmail进行认证
+        // 现在UserDetailsServiceImpl.loadUserByUsername方法已经支持通过邮箱查找用户
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(usernameOrEmail, password)
         );
 
         // 设置认证信息到上下文
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 从认证对象中获取用户名
+        String username = authentication.getName();
 
         // 生成JWT令牌
         return jwtUtil.generateToken(username);
@@ -87,5 +91,17 @@ public class UserService {
         }
 
         return userRepository.save(user);
+    }
+
+    public void updatePassword(String username, String newPassword) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOptional.get();
+        // 加密新密码
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

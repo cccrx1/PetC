@@ -44,27 +44,26 @@
         <div class="bg-white rounded-lg shadow p-4 mb-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">选择咨询类型</h3>
             <div class="flex flex-wrap gap-3">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-md">在线图文问诊</button>
-                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">线下医院预约</button>
+                <button id="online-consult-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md">在线图文问诊</button>
+                <button id="offline-consult-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">线下医院预约</button>
             </div>
         </div>
 
         <!-- 在线咨询 -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div id="online-consult-section" class="bg-white rounded-lg shadow overflow-hidden mb-6">
             <div class="p-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">在线图文问诊</h3>
             </div>
             <div class="p-4">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">选择宠物</label>
-                    <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>小金（金毛）</option>
-                        <option>小白（波斯猫）</option>
+                    <label for="pet-select" class="block text-sm font-medium text-gray-700 mb-1">选择宠物</label>
+                    <select id="pet-select" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- 宠物列表将通过JavaScript动态填充 -->
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">症状描述</label>
-                    <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="请详细描述宠物的症状..."></textarea>
+                    <label for="symptom-text" class="block text-sm font-medium text-gray-700 mb-1">症状描述</label>
+                    <textarea id="symptom-text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="请详细描述宠物的症状..."></textarea>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">上传图片（可选）</label>
@@ -78,7 +77,81 @@
                         </button>
                     </div>
                 </div>
-                <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">提交咨询</button>
+                <div class="flex space-x-2">
+                    <button id="submit-consult-btn" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">提交咨询</button>
+                    <button id="ai-chat-btn" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition">
+                        <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        AI智能问诊
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 线下预约 -->
+        <div id="offline-consult-section" class="bg-white rounded-lg shadow overflow-hidden mb-6 hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">线下医院预约</h3>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label for="offline-pet-select" class="block text-sm font-medium text-gray-700 mb-1">选择宠物</label>
+                    <select id="offline-pet-select" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- 宠物列表将通过JavaScript动态填充 -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="hospital-select" class="block text-sm font-medium text-gray-700 mb-1">选择医院</label>
+                    <select id="hospital-select" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="1">北京宠物医院</option>
+                        <option value="2">上海宠物医院</option>
+                        <option value="3">广州宠物医院</option>
+                        <option value="4">深圳宠物医院</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="appointment-date" class="block text-sm font-medium text-gray-700 mb-1">预约日期</label>
+                    <input type="date" id="appointment-date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="appointment-time" class="block text-sm font-medium text-gray-700 mb-1">预约时间</label>
+                    <select id="appointment-time" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="appointment-note" class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+                    <textarea id="appointment-note" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2" placeholder="请填写备注信息..."></textarea>
+                </div>
+                <button id="submit-appointment-btn" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">提交预约</button>
+            </div>
+        </div>
+
+        <!-- AI智能问诊模态框 -->
+        <div id="ai-chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 h-[95vh] relative z-10">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center relative z-20">
+                    <h3 class="text-xl font-bold text-gray-800">AI智能问诊</h3>
+                    <button id="close-ai-modal" class="text-gray-500 hover:text-gray-700 relative z-20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="h-[calc(100%-64px)] relative z-10">
+                    <iframe
+                        src="ai-chat.html"
+                        style="width: 100%; height: 800px; border: none; display: block; margin: 0 auto; position: relative; z-index: 5;"
+                        frameborder="0"
+                        allow="microphone">
+                    </iframe>
+                </div>
             </div>
         </div>
 
@@ -87,33 +160,8 @@
             <div class="p-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">咨询记录</h3>
             </div>
-            <div class="divide-y divide-gray-200">
-                <div class="p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2">在线咨询</span>
-                            <span class="font-medium">小金（金毛）</span>
-                        </div>
-                        <span class="text-sm text-gray-500">2026-03-30 14:30</span>
-                    </div>
-                    <div class="text-sm text-gray-600 mb-2">症状：最近食欲下降，精神不振</div>
-                    <div class="flex justify-end">
-                        <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">线下预约</span>
-                            <span class="font-medium">小白（波斯猫）</span>
-                        </div>
-                        <span class="text-sm text-gray-500">2026-03-28 09:15</span>
-                    </div>
-                    <div class="text-sm text-gray-600 mb-2">预约：北京宠物医院 - 2026-03-29 10:00</div>
-                    <div class="flex justify-end">
-                        <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                    </div>
-                </div>
+            <div id="consultation-list" class="divide-y divide-gray-200">
+                <!-- 咨询记录将通过JavaScript动态填充 -->
             </div>
         </div>
     </main>
@@ -150,44 +198,178 @@
     </nav>
 
     <script>
+        // 咨询类型切换
+        document.getElementById('online-consult-btn').addEventListener('click', function() {
+            this.classList.add('bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('offline-consult-btn').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('offline-consult-btn').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('online-consult-section').classList.remove('hidden');
+            document.getElementById('offline-consult-section').classList.add('hidden');
+        });
+
+        document.getElementById('offline-consult-btn').addEventListener('click', function() {
+            this.classList.add('bg-blue-600', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            document.getElementById('online-consult-btn').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('online-consult-btn').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('offline-consult-section').classList.remove('hidden');
+            document.getElementById('online-consult-section').classList.add('hidden');
+        });
+
+        // 加载宠物列表
+        async function loadPets() {
+            try {
+                const pets = await window.auth.apiRequest('/pets');
+                const petSelect = document.getElementById('pet-select');
+                const offlinePetSelect = document.getElementById('offline-pet-select');
+                
+                petSelect.innerHTML = '';
+                offlinePetSelect.innerHTML = '';
+                
+                pets.forEach(pet => {
+                    const option1 = document.createElement('option');
+                    option1.value = pet.id;
+                    option1.textContent = `${pet.name}（${pet.breed}）`;
+                    petSelect.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = pet.id;
+                    option2.textContent = `${pet.name}（${pet.breed}）`;
+                    offlinePetSelect.appendChild(option2);
+                });
+            } catch (error) {
+                console.error('加载宠物列表失败:', error);
+            }
+        }
+
+        // 加载咨询记录
+        async function loadConsultations() {
+            try {
+                const consultations = await window.auth.apiRequest('/consultations');
+                const consultationList = document.getElementById('consultation-list');
+                
+                consultationList.innerHTML = '';
+                
+                if (consultations.length === 0) {
+                    consultationList.innerHTML = '<div class="p-4 text-center text-gray-500">暂无咨询记录</div>';
+                    return;
+                }
+                
+                consultations.forEach(consultation => {
+                    const consultItem = `
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center">
+                                    <span class="${consultation.type === 'online' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} text-xs px-2 py-1 rounded mr-2">
+                                        ${consultation.type === 'online' ? '在线咨询' : '线下预约'}
+                                    </span>
+                                    <span class="font-medium">${consultation.petName || '未知宠物'}</span>
+                                </div>
+                                <span class="text-sm text-gray-500">${new Date(consultation.createdAt).toLocaleString()}</span>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">
+                                ${consultation.type === 'online' ? `症状：${consultation.symptoms}` : `预约：${consultation.hospital} - ${consultation.appointmentTime}`}
+                            </div>
+                            <div class="flex justify-end">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm view-consult-btn" data-id="${consultation.id}">查看详情</button>
+                            </div>
+                        </div>
+                    `;
+                    consultationList.innerHTML += consultItem;
+                });
+            } catch (error) {
+                console.error('加载咨询记录失败:', error);
+            }
+        }
+
         // 提交咨询
-        document.querySelector('button:last-child').addEventListener('click', function() {
-            const petSelect = document.querySelector('select');
-            const symptomText = document.querySelector('textarea');
+        document.getElementById('submit-consult-btn').addEventListener('click', async function() {
+            const petId = document.getElementById('pet-select').value;
+            const symptoms = document.getElementById('symptom-text').value;
             
-            if (!symptomText.value.trim()) {
-                Swal.fire('提示', '请描述宠物的症状', 'warning');
+            if (!petId || !symptoms.trim()) {
+                Swal.fire('提示', '请选择宠物并描述症状', 'warning');
                 return;
             }
             
-            // 模拟提交咨询请求
-            fetch('http://localhost:8080/api/consultations', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    petId: petSelect.value === '小金（金毛）' ? 1 : 2,
-                    type: 'online',
-                    symptoms: symptomText.value,
-                    status: 'pending'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('成功', '咨询提交成功，等待医生回复', 'success').then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
-                }
-            })
-            .catch(error => {
+            try {
+                await window.auth.apiRequest('/consultations', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        petId: parseInt(petId),
+                        type: 'online',
+                        symptoms: symptoms,
+                        status: 'pending'
+                    })
+                });
+                
+                Swal.fire('成功', '咨询提交成功，等待医生回复', 'success').then(() => {
+                    loadConsultations();
+                    document.getElementById('symptom-text').value = '';
+                });
+            } catch (error) {
                 Swal.fire('错误', '提交失败，请稍后重试', 'error');
-            });
+            }
+        });
+
+        // 提交线下预约
+        document.getElementById('submit-appointment-btn').addEventListener('click', async function() {
+            const petId = document.getElementById('offline-pet-select').value;
+            const hospitalId = document.getElementById('hospital-select').value;
+            const date = document.getElementById('appointment-date').value;
+            const time = document.getElementById('appointment-time').value;
+            const note = document.getElementById('appointment-note').value;
+            
+            if (!petId || !hospitalId || !date || !time) {
+                Swal.fire('提示', '请填写所有必填字段', 'warning');
+                return;
+            }
+            
+            try {
+                await window.auth.apiRequest('/consultations', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        petId: parseInt(petId),
+                        type: 'offline',
+                        hospital: document.getElementById('hospital-select').options[document.getElementById('hospital-select').selectedIndex].text,
+                        appointmentTime: `${date} ${time}`,
+                        note: note,
+                        status: 'pending'
+                    })
+                });
+                
+                Swal.fire('成功', '预约提交成功', 'success').then(() => {
+                    loadConsultations();
+                    document.getElementById('appointment-note').value = '';
+                });
+            } catch (error) {
+                Swal.fire('错误', '提交失败，请稍后重试', 'error');
+            }
+        });
+
+        // AI智能问诊
+        document.getElementById('ai-chat-btn').addEventListener('click', function() {
+            document.getElementById('ai-chat-modal').classList.remove('hidden');
+        });
+
+        document.getElementById('close-ai-modal').addEventListener('click', function() {
+            document.getElementById('ai-chat-modal').classList.add('hidden');
+        });
+
+        document.getElementById('ai-chat-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // 页面加载时初始化
+        window.addEventListener('load', async function() {
+            await loadPets();
+            await loadConsultations();
         });
     </script>
+    <!-- 引入主脚本 -->
+    <script src="src/js/main.js"></script>
 </body>
 </html>

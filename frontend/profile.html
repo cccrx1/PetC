@@ -51,11 +51,11 @@
                     </div>
                 </div>
                 <div class="flex-1">
-                    <h3 class="text-xl font-semibold text-gray-800">张三</h3>
-                    <p class="text-gray-600">zhangsan@example.com</p>
+                    <h3 id="user-name" class="text-xl font-semibold text-gray-800">加载中...</h3>
+                    <p id="user-email" class="text-gray-600">加载中...</p>
                     <div class="mt-4 flex space-x-2">
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">编辑资料</button>
-                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">修改密码</button>
+                        <button id="edit-profile-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">编辑资料</button>
+                        <button id="change-password-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">修改密码</button>
                     </div>
                 </div>
             </div>
@@ -243,8 +243,35 @@
     </div>
 
     <script>
+        // 加载用户信息
+        function loadUserProfile() {
+            const user = window.auth.getUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.name || user.username;
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('edit-name').value = user.name || user.username;
+                document.getElementById('edit-email').value = user.email;
+            } else {
+                // 尝试从API获取用户信息
+                window.auth.apiRequest('/auth/profile')
+                    .then(userData => {
+                        document.getElementById('user-name').textContent = userData.name || userData.username;
+                        document.getElementById('user-email').textContent = userData.email;
+                        document.getElementById('edit-name').value = userData.name || userData.username;
+                        document.getElementById('edit-email').value = userData.email;
+                        // 更新本地存储的用户信息
+                        window.auth.setUser(userData);
+                    })
+                    .catch(error => {
+                        console.error('加载用户信息失败:', error);
+                        document.getElementById('user-name').textContent = '未登录';
+                        document.getElementById('user-email').textContent = '';
+                    });
+            }
+        }
+
         // 打开编辑资料模态框
-        document.querySelectorAll('button')[0].addEventListener('click', function() {
+        document.getElementById('edit-profile-btn').addEventListener('click', function() {
             document.getElementById('edit-profile-modal').classList.remove('hidden');
         });
 
@@ -261,7 +288,7 @@
         });
 
         // 打开修改密码模态框
-        document.querySelectorAll('button')[1].addEventListener('click', function() {
+        document.getElementById('change-password-btn').addEventListener('click', function() {
             document.getElementById('change-password-modal').classList.remove('hidden');
         });
 
@@ -278,7 +305,7 @@
         });
 
         // 编辑资料表单提交
-        document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+        document.getElementById('edit-profile-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('edit-name').value;
@@ -289,32 +316,26 @@
                 return;
             }
             
-            // 模拟更新资料请求
-            fetch('http://localhost:8080/api/users/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ name, email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('成功', '资料更新成功', 'success').then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
-                }
-            })
-            .catch(error => {
+            try {
+                const updatedUser = await window.auth.apiRequest('/auth/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify({ name, email })
+                });
+                
+                Swal.fire('成功', '资料更新成功', 'success').then(() => {
+                    document.getElementById('edit-profile-modal').classList.add('hidden');
+                    // 更新本地存储的用户信息
+                    window.auth.setUser(updatedUser);
+                    // 重新加载用户信息
+                    loadUserProfile();
+                });
+            } catch (error) {
                 Swal.fire('错误', '更新失败，请稍后重试', 'error');
-            });
+            }
         });
 
         // 修改密码表单提交
-        document.getElementById('change-password-form').addEventListener('submit', function(e) {
+        document.getElementById('change-password-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const currentPassword = document.getElementById('current-password').value;
@@ -331,28 +352,29 @@
                 return;
             }
             
-            // 模拟修改密码请求
-            fetch('http://localhost:8080/api/users/password', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ currentPassword, newPassword })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('成功', '密码修改成功', 'success').then(() => {
-                        document.getElementById('change-password-modal').classList.add('hidden');
-                    });
-                } else {
-                    Swal.fire('错误', data.message, 'error');
-                }
-            })
-            .catch(error => {
+            try {
+                console.log('开始修改密码');
+                console.log('当前密码:', currentPassword);
+                console.log('新密码:', newPassword);
+                
+                const response = await window.auth.apiRequest('/auth/password', {
+                    method: 'PUT',
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                console.log('修改密码成功:', response);
+                
+                Swal.fire('成功', '密码修改成功', 'success').then(() => {
+                    document.getElementById('change-password-modal').classList.add('hidden');
+                    // 清空表单
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                });
+            } catch (error) {
+                console.error('修改密码失败:', error);
                 Swal.fire('错误', '修改失败，请稍后重试', 'error');
-            });
+            }
         });
 
         // 退出登录
@@ -366,15 +388,16 @@
                 cancelButtonText: '取消'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // 清除本地存储
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    
-                    // 跳转到登录页面
-                    window.location.href = 'login.html';
+                    // 调用退出登录函数
+                    window.auth.logout();
                 }
             });
         });
+
+        // 页面加载时加载用户信息
+        window.addEventListener('load', loadUserProfile);
     </script>
+    <!-- 引入主脚本 -->
+    <script src="src/js/main.js"></script>
 </body>
 </html>
