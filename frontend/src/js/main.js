@@ -46,10 +46,16 @@ async function apiRequest(url, options = {}) {
     }
     
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
         const response = await fetch(`${API_BASE_URL}${url}`, {
             ...options,
-            headers
+            headers,
+            signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
         
         if (response.status === 401) {
             // 未授权，清除登录状态并跳转到登录页

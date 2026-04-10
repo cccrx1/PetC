@@ -36,7 +36,7 @@ public class ChatAssistantServiceImpl implements ChatAssistantService {
     public Map<String, Object> sendMessage(String message, String userId, String conversationId) {
         logger.info("Sending message to Dify: message={}, userId={}, conversationId={}", message, userId, conversationId);
         logger.info("Chat API URL: {}", chatApiUrl);
-        logger.info("Chat API Key: {}", chatApiKey);
+        // 移除API密钥的日志记录
         logger.info("Chat App ID: {}", chatAppId);
         
         try {
