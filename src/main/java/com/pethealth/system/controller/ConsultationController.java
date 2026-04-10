@@ -91,7 +91,10 @@ public class ConsultationController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Consultation>> getConsultations(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Consultation>> getConsultations(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.ok(List.of());
+        }
         // 从token中提取用户名
         String jwt = token.substring(7); // 去掉Bearer前缀
         String username = jwtUtil.extractUsername(jwt);

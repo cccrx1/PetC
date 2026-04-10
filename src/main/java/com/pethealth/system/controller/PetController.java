@@ -38,7 +38,10 @@ public class PetController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Pet>> getPets(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Pet>> getPets(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.ok(List.of());
+        }
         Long userId = getUserIdFromToken(token);
         List<Pet> pets = petService.getPetsByUserId(userId);
         return ResponseEntity.ok(pets);

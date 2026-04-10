@@ -264,12 +264,12 @@
                                     <span class="${consultation.type === 'online' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} text-xs px-2 py-1 rounded mr-2">
                                         ${consultation.type === 'online' ? '在线咨询' : '线下预约'}
                                     </span>
-                                    <span class="font-medium">${consultation.petName || '未知宠物'}</span>
+                                    <span class="font-medium">${consultation.pet ? consultation.pet.name : '未知宠物'}</span>
                                 </div>
                                 <span class="text-sm text-gray-500">${new Date(consultation.createdAt).toLocaleString()}</span>
                             </div>
                             <div class="text-sm text-gray-600 mb-2">
-                                ${consultation.type === 'online' ? `症状：${consultation.symptoms}` : `预约：${consultation.hospital} - ${consultation.appointmentTime}`}
+                                ${consultation.type === 'online' ? `症状：${consultation.description}` : `预约：${consultation.hospitalName} - ${consultation.appointmentTime}`}
                             </div>
                             <div class="flex justify-end">
                                 <button class="text-blue-600 hover:text-blue-800 text-sm view-consult-btn" data-id="${consultation.id}">查看详情</button>
@@ -280,6 +280,7 @@
                 });
             } catch (error) {
                 console.error('加载咨询记录失败:', error);
+                Swal.fire('错误', '加载咨询记录失败，请稍后重试', 'error');
             }
         }
 
@@ -309,6 +310,7 @@
                     document.getElementById('symptom-text').value = '';
                 });
             } catch (error) {
+                console.error('提交咨询失败:', error);
                 Swal.fire('错误', '提交失败，请稍后重试', 'error');
             }
         });
@@ -344,6 +346,7 @@
                     document.getElementById('appointment-note').value = '';
                 });
             } catch (error) {
+                console.error('提交预约失败:', error);
                 Swal.fire('错误', '提交失败，请稍后重试', 'error');
             }
         });
