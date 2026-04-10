@@ -146,8 +146,8 @@
                 </div>
                 <div class="h-[calc(100%-64px)] relative z-10">
                     <iframe
-                        src="ai-chat.html"
-                        style="width: 100%; height: 800px; border: none; display: block; margin: 0 auto; position: relative; z-index: 5;"
+                        src="http://47.113.151.36/chatbot/TosacLQ5lj7GqcYJ"
+                        style="width: 100%; height: 100%; min-height: 700px; border: none; display: block; margin: 0 auto; position: relative; z-index: 5;"
                         frameborder="0"
                         allow="microphone">
                     </iframe>
@@ -365,6 +365,38 @@
                 this.classList.add('hidden');
             }
         });
+
+        // 查看咨询详情
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('view-consult-btn')) {
+                const consultationId = e.target.getAttribute('data-id');
+                viewConsultationDetails(consultationId);
+            }
+        });
+
+        async function viewConsultationDetails(consultationId) {
+            try {
+                const consultation = await window.auth.apiRequest(`/consultations/${consultationId}`);
+                // 显示咨询详情模态框
+                Swal.fire({
+                    title: '咨询详情',
+                    html: `
+                        <div class="text-left">
+                            <p><strong>类型：</strong>${consultation.type === 'online' ? '在线咨询' : '线下预约'}</p>
+                            <p><strong>宠物：</strong>${consultation.pet ? consultation.pet.name : '未知宠物'}</p>
+                            <p><strong>症状：</strong>${consultation.description}</p>
+                            <p><strong>状态：</strong>${consultation.status}</p>
+                            <p><strong>创建时间：</strong>${new Date(consultation.createdAt).toLocaleString()}</p>
+                            ${consultation.response ? `<p><strong>回复：</strong>${consultation.response}</p>` : ''}
+                        </div>
+                    `,
+                    confirmButtonText: '确定'
+                });
+            } catch (error) {
+                console.error('加载咨询详情失败:', error);
+                Swal.fire('错误', '加载咨询详情失败，请稍后重试', 'error');
+            }
+        }
 
         // 页面加载时初始化
         window.addEventListener('load', async function() {

@@ -4,8 +4,12 @@ import com.pethealth.system.entity.Consultation;
 import com.pethealth.system.entity.Pet;
 import com.pethealth.system.entity.User;
 import com.pethealth.system.service.ConsultationService;
+import com.pethealth.system.service.ConsultationWorkflowService;
+import com.pethealth.system.service.PetService;
 import com.pethealth.system.service.UserService;
 import com.pethealth.system.utils.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +24,19 @@ import java.util.Map;
 @RequestMapping("/consultations")
 public class ConsultationController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConsultationController.class);
+
     @Autowired
     private ConsultationService consultationService;
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private PetService petService;
+    
+    @Autowired
+    private ConsultationWorkflowService consultationWorkflowService;
     
     @Autowired
     private JwtUtil jwtUtil;
@@ -41,8 +53,9 @@ public class ConsultationController {
         consultation.setUser(user);
         
         // 设置宠物
+        Long petId = null;
         if (request.containsKey("petId")) {
-            Long petId = ((Number) request.get("petId")).longValue();
+            petId = ((Number) request.get("petId")).longValue();
             Pet pet = new Pet();
             pet.setId(petId);
             consultation.setPet(pet);
@@ -53,8 +66,10 @@ public class ConsultationController {
             consultation.setType((String) request.get("type"));
         }
         
+        String symptoms = null;
         if (request.containsKey("symptoms")) {
-            consultation.setDescription((String) request.get("symptoms"));
+            symptoms = (String) request.get("symptoms");
+            consultation.setDescription(symptoms);
         }
         
         // 设置title字段
@@ -69,6 +84,8 @@ public class ConsultationController {
         
         if (request.containsKey("status")) {
             consultation.setStatus((String) request.get("status"));
+        } else {
+            consultation.setStatus("pending");
         }
         
         if (request.containsKey("hospital")) {
@@ -87,7 +104,93 @@ public class ConsultationController {
         }
         
         Consultation createdConsultation = consultationService.createConsultation(consultation);
+        
+        // 调用工作流处理在线咨询
+        if ("online".equals(createdConsultation.getType()) && symptoms != null && petId != null) {
+            try {
+                // 获取宠物详细信息
+                Pet pet = petService.getPetById(petId, user.getId());
+                if (pet != null) {
+                    logger.info("Calling workflow to process consultation: {}", createdConsultation.getId());
+                    // 调用工作流服务
+                    Map<String, Object> workflowResponse = consultationWorkflowService.processConsultation(
+                            createdConsultation.getId(),
+                            symptoms,
+                            pet.getBreed(),
+                            pet.getAge(),
+                            pet.getName()
+                    );
+                    
+                    // 解析工作流响应
+                    if (workflowResponse != null) {
+                        logger.info("Workflow response received: {}", workflowResponse);
+                        // 检查工作流是否返回错误
+                        if (workflowResponse.containsKey("error")) {
+                            logger.error("Workflow returned error: {}", workflowResponse.get("error"));
+                            // 可以选择在这里添加错误处理逻辑
+                        } else {
+                            // 提取工作流的解答
+                            String responseContent = extractResponseFromWorkflow(workflowResponse);
+                            if (responseContent != null) {
+                                // 检查响应内容长度，如果太长就截断
+                                if (responseContent.length() > 100) {
+                                    responseContent = responseContent.substring(0, 100) + "...";
+                                    logger.warn("Workflow response truncated due to length");
+                                }
+                                // 更新咨询记录，添加工作流的响应
+                                createdConsultation.setResponse(responseContent);
+                                createdConsultation.setStatus("completed");
+                                createdConsultation = consultationService.updateConsultation(createdConsultation.getId(), createdConsultation);
+                                logger.info("Consultation updated with workflow response: {}", createdConsultation.getId());
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // 忽略工作流调用错误，不影响咨询创建
+                logger.error("Error processing consultation with workflow: {}", e.getMessage(), e);
+            }
+        }
+        
+        // 返回更新后的咨询对象
         return new ResponseEntity<>(createdConsultation, HttpStatus.CREATED);
+    }
+    
+    /**
+     * 从工作流响应中提取解答内容
+     */
+    private String extractResponseFromWorkflow(Map<String, Object> workflowResponse) {
+        try {
+            if (workflowResponse.containsKey("data")) {
+                Map<String, Object> data = (Map<String, Object>) workflowResponse.get("data");
+                // 尝试第一种结构：data -> output -> result
+                if (data.containsKey("output")) {
+                    Map<String, Object> output = (Map<String, Object>) data.get("output");
+                    if (output.containsKey("result")) {
+                        return (String) output.get("result");
+                    }
+                }
+                // 尝试第二种结构：data -> outputs -> json -> data -> output -> result
+                if (data.containsKey("outputs")) {
+                    Map<String, Object> outputs = (Map<String, Object>) data.get("outputs");
+                    if (outputs.containsKey("json")) {
+                        Map<String, Object> json = (Map<String, Object>) outputs.get("json");
+                        if (json.containsKey("data")) {
+                            Map<String, Object> jsonData = (Map<String, Object>) json.get("data");
+                            if (jsonData.containsKey("output")) {
+                                Map<String, Object> output = (Map<String, Object>) jsonData.get("output");
+                                if (output.containsKey("result")) {
+                                    return (String) output.get("result");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error extracting response from workflow: {}", e.getMessage());
+        }
+        return null;
     }
     
     @GetMapping
