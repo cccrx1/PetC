@@ -1,0 +1,47 @@
+# 生产环境配置
+
+# Text2SQL 工作流配置
+text2sql:
+  api:
+    url: http://47.113.151.36/v1/workflows/run
+    key: ${TEXT2SQL_API_KEY}
+    workflow-id: 5fGIDkZ6XKVtR0dK
+
+# 聊天助手配置
+chat-assistant:
+  api:
+    url: http://47.113.151.36/v1/chat-messages
+    key: ${CHAT_ASSISTANT_API_KEY}
+    app-id: EwDLcVVm2xKVhzbM
+
+# 生活方案定制工作流配置
+life-plan:
+  api:
+    url: http://47.113.151.36/v1/workflows/run
+    key: ${LIFE_PLAN_API_KEY}
+    workflow-id: NHp2fnEDsLonpJYw
+
+# MySQL 数据库配置
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000

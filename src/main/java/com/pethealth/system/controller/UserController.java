@@ -1,6 +1,8 @@
 package com.pethealth.system.controller;
 
+import com.pethealth.system.dto.ResponseDTO;
 import com.pethealth.system.entity.User;
+import com.pethealth.system.exception.BusinessException;
 import com.pethealth.system.service.UserService;
 import com.pethealth.system.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,125 +35,124 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody User user) {
+    public ResponseEntity<ResponseDTO<?>> register(@RequestBody User user) {
         logger.info("Registering user: {}", user.getUsername());
-        logger.info("User email: {}", user.getEmail());
-        logger.info("User name: {}", user.getName());
-        logger.info("User password: {}", user.getPassword());
         try {
-            // 检查用户名是否为null
+            // 检查参数
             if (user.getUsername() == null) {
-                logger.error("Username is null");
-                Map<String, Object> response = new HashMap<>();
-                response.put("error", "Username is null");
-                return ResponseEntity.status(400).body(response);
+                throw new BusinessException("Username is required");
             }
-            
-            // 检查邮箱是否为null
             if (user.getEmail() == null) {
-                logger.error("Email is null");
-                Map<String, Object> response = new HashMap<>();
-                response.put("error", "Email is null");
-                return ResponseEntity.status(400).body(response);
+                throw new BusinessException("Email is required");
             }
-            
-            // 检查密码是否为null
             if (user.getPassword() == null) {
-                logger.error("Password is null");
-                Map<String, Object> response = new HashMap<>();
-                response.put("error", "Password is null");
-                return ResponseEntity.status(400).body(response);
+                throw new BusinessException("Password is required");
             }
             
             User registeredUser = userService.register(user);
             logger.info("User registered successfully: {}", user.getUsername());
-            Map<String, Object> response = new HashMap<>();
-            response.put("user", registeredUser);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ResponseDTO.success(registeredUser));
+        } catch (BusinessException e) {
+            logger.error("Error registering user: {}", e.getMessage());
+            return ResponseEntity.status(e.getCode()).body(ResponseDTO.error(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             logger.error("Error registering user: {}", e.getMessage());
             logger.error("Error stack trace: ", e);
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.ok(ResponseDTO.error(e.getMessage()));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<ResponseDTO<?>> login(@RequestBody Map<String, String> credentials) {
         String usernameOrEmail = credentials.get("username");
         String password = credentials.get("password");
         try {
+            if (usernameOrEmail == null || password == null) {
+                throw new BusinessException("Username and password are required");
+            }
+            
             String token = userService.login(usernameOrEmail, password);
             // 从token中提取用户名
             String username = jwtUtil.extractUsername(token);
             User user = userService.getProfile(username);
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("user", user);
-            return ResponseEntity.ok(response);
+            
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("token", token);
+            responseData.put("user", user);
+            
+            return ResponseEntity.ok(ResponseDTO.success(responseData));
+        } catch (BusinessException e) {
+            logger.error("Login failed for user: {}", usernameOrEmail, e);
+            return ResponseEntity.ok(ResponseDTO.error(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             logger.error("Login failed for user: {}", usernameOrEmail, e);
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", "Invalid username or password");
-            return ResponseEntity.status(401).body(response);
+            return ResponseEntity.status(401).body(ResponseDTO.error(401, "Invalid username or password"));
         }
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<User> getProfile() {
+    public ResponseEntity<ResponseDTO<?>> getProfile() {
         // 从SecurityContextHolder中获取认证信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.ok(ResponseDTO.unauthorized());
         }
         
         String username = authentication.getName();
-        User user = userService.getProfile(username);
-        return ResponseEntity.ok(user);
+        try {
+            User user = userService.getProfile(username);
+            return ResponseEntity.ok(ResponseDTO.success(user));
+        } catch (Exception e) {
+            logger.error("Error getting profile: {}", e.getMessage());
+            return ResponseEntity.ok(ResponseDTO.error(e.getMessage()));
+        }
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<User> updateProfile(@RequestBody User updatedUser) {
+    public ResponseEntity<ResponseDTO<?>> updateProfile(@RequestBody User updatedUser) {
         // 从SecurityContextHolder中获取认证信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.ok(ResponseDTO.unauthorized());
         }
         
         String username = authentication.getName();
-        User user = userService.updateProfile(username, updatedUser);
-        return ResponseEntity.ok(user);
+        try {
+            User user = userService.updateProfile(username, updatedUser);
+            return ResponseEntity.ok(ResponseDTO.success(user));
+        } catch (Exception e) {
+            logger.error("Error updating profile: {}", e.getMessage());
+            return ResponseEntity.ok(ResponseDTO.error(e.getMessage()));
+        }
     }
 
     @PutMapping("/password")
-    public ResponseEntity<Void> updatePassword(@RequestBody Map<String, String> passwordData, HttpServletRequest request) {
+    public ResponseEntity<ResponseDTO<?>> updatePassword(@RequestBody Map<String, String> passwordData, HttpServletRequest request) {
         logger.info("Received update password request");
         try {
+            // 检查request是否为null
+            if (request == null) {
+                return ResponseEntity.ok(ResponseDTO.unauthorized());
+            }
+            
             // 从请求头中获取token
             String authorizationHeader = request.getHeader("Authorization");
-            logger.info("Authorization header: {}", authorizationHeader);
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                logger.error("Authorization header is null or invalid");
-                return ResponseEntity.status(401).build();
+                return ResponseEntity.ok(ResponseDTO.unauthorized());
             }
             
             String jwt = authorizationHeader.substring(7);
-            logger.info("Extracted JWT: {}", jwt);
             String username = jwtUtil.extractUsername(jwt);
             logger.info("Updating password for user: {}", username);
             
             String currentPassword = passwordData.get("currentPassword");
             String newPassword = passwordData.get("newPassword");
-            logger.info("Current password: {}, New password: {}", currentPassword, newPassword);
             
             if (currentPassword == null || newPassword == null) {
-                logger.error("Current password or new password is null");
-                return ResponseEntity.status(400).build();
+                throw new BusinessException("Current password and new password are required");
             }
             
             // 验证当前密码
-            logger.info("Authenticating user: {}", username);
             try {
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(username, currentPassword)
@@ -160,29 +160,26 @@ public class UserController {
                 logger.info("Authentication successful for user: {}", username);
             } catch (Exception e) {
                 logger.error("Authentication failed for user: {}", username, e);
-                return ResponseEntity.status(401).build();
+                return ResponseEntity.status(401).body(ResponseDTO.error(401, "Current password is incorrect"));
             }
             
             // 更新密码
-            logger.info("Updating password for user: {}", username);
-            try {
-                userService.updatePassword(username, newPassword);
-                logger.info("Password updated successfully for user: {}", username);
-            } catch (Exception e) {
-                logger.error("Error updating password for user: {}", username, e);
-                return ResponseEntity.status(500).build();
-            }
+            userService.updatePassword(username, newPassword);
+            logger.info("Password updated successfully for user: {}", username);
             
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(ResponseDTO.success());
+        } catch (BusinessException e) {
+            logger.error("Error updating password: {}", e.getMessage());
+            return ResponseEntity.status(e.getCode()).body(ResponseDTO.error(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             logger.error("Error updating password: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.ok(ResponseDTO.serverError());
         }
     }
     
     @GetMapping("/test")
-    public ResponseEntity<String> test() {
+    public ResponseEntity<ResponseDTO<?>> test() {
         logger.info("Test endpoint called");
-        return ResponseEntity.ok("Test successful");
+        return ResponseEntity.ok(ResponseDTO.success("Test successful"));
     }
 }
